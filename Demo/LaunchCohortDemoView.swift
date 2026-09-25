@@ -1,36 +1,36 @@
 import SwiftUI
 import LaunchCohort
 
-/// Synthetic fleet data standing in for two weeks of real launch telemetry:
-/// last week (mostly iOS 26, a little iOS 27 already migrated) versus this
-/// week (iOS 27 now the majority, and a post-main regression shipped that
-/// only hits the 27 cohort). This is the exact shape the article argues
-/// every launch dashboard should be able to show and currently can't.
+/// Synthetic fleet data standing in for two telemetry windows: last week
+/// (mostly iOS 26, a small iOS 27 minority already migrated) versus this
+/// week (iOS 27 now the fleet majority, and a post-main regression shipped
+/// that only hits the 27 cohort). These are the *exact* counts and values
+/// used in `LaunchTelemetrySummaryTests.testDetectsMaskedRegressionAcrossAPlatformMigration`
+/// — the demo view renders the same masked-regression scenario the test
+/// proves, not a different illustrative one, so the numbers this view
+/// displays are reproducible by running that test.
 enum DemoFleet {
     static func baseline() -> LaunchCohortStore {
         let store = LaunchCohortStore()
-        for i in 0..<48 {
-            let jitter = Double(i % 5) * 0.004
-            store.record(makeSample(os: "26.4", cold: 1.02 + jitter))
+        for _ in 0..<20 {
+            store.record(makeSample(os: "26.4", cold: 1.00))
         }
-        for i in 0..<12 {
-            let jitter = Double(i % 5) * 0.004
-            store.record(makeSample(os: "27.0", cold: 0.83 + jitter))
+        for _ in 0..<5 {
+            store.record(makeSample(os: "27.0", cold: 0.85))
         }
         return store
     }
 
     static func current() -> LaunchCohortStore {
         let store = LaunchCohortStore()
-        for i in 0..<10 {
-            let jitter = Double(i % 5) * 0.004
-            store.record(makeSample(os: "26.4", cold: 1.02 + jitter))
+        for _ in 0..<5 {
+            store.record(makeSample(os: "26.4", cold: 1.00))
         }
-        for i in 0..<52 {
-            let jitter = Double(i % 5) * 0.004
+        for _ in 0..<25 {
             // Pre-main still fast, but a shipped regression in post-main
-            // (the code this app's own team owns) pushes cold launch up.
-            store.record(makeSample(os: "27.0", cold: 1.01 + jitter))
+            // (the code this app's own team owns) pushes cold launch up
+            // from this cohort's own 0.85s baseline to 1.05s.
+            store.record(makeSample(os: "27.0", cold: 1.05))
         }
         return store
     }
