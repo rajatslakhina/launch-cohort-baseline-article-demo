@@ -69,11 +69,13 @@ public final class LaunchCohortStore {
         samples.filter { $0.majorVersionCohort == cohort }.count
     }
 
-    /// Nearest-rank percentile over a value array. Bounds-checked: `p` is
-    /// clamped into `[0, 1]` before use, and the computed index is clamped
-    /// into the array's valid range, so this never force-unwraps and never
-    /// indexes out of bounds — including for a single-element or empty
-    /// input.
+    /// Percentile over a sorted value array: scales `p` into an index and
+    /// rounds to the nearest element (a linear-interpolation-then-round
+    /// method, not textbook nearest-rank, but close enough for a launch-time
+    /// dashboard). Bounds-checked: `p` is clamped into `[0, 1]` before use,
+    /// and the computed index is clamped into the array's valid range, so
+    /// this never force-unwraps and never indexes out of bounds — including
+    /// for a single-element or empty input.
     static func percentile(_ p: Double, of values: [TimeInterval]) -> TimeInterval? {
         guard !values.isEmpty else { return nil }
         let clampedP = min(max(p, 0), 1)
