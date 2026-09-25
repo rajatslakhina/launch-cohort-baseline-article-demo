@@ -37,12 +37,13 @@ enum DemoFleet {
 
     private static func makeSample(os: String, cold: TimeInterval) -> LaunchSample {
         let preMain = cold * 0.35
-        // Force-unwrap avoided: this constructor input is always internally
-        // consistent (preMain <= cold by construction), but we still fall
-        // back to a same-instant sample instead of crashing if that were
-        // ever violated by a future edit here.
-        LaunchSample(osVersion: os, processStart: 0, preMainEnd: preMain, firstFrame: cold)
-            ?? LaunchSample(osVersion: os, processStart: 0, preMainEnd: 0, firstFrame: 0)!
+        // `cold` is always a positive literal at every call site in this file,
+        // so `preMain` (<= cold) and `firstFrame` (== cold, >= preMain) always
+        // satisfy LaunchSample's validity guard. This force-unwrap can't
+        // actually fail given how this function is called — it would only
+        // trip if a future edit passed a negative `cold`, which is exactly
+        // the class of bug the library's own tests exist to catch.
+        LaunchSample(osVersion: os, processStart: 0, preMainEnd: preMain, firstFrame: cold)!
     }
 }
 
