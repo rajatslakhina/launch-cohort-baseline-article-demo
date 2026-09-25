@@ -6,7 +6,7 @@ A tiny Swift library — plus a runnable SwiftUI demo — that answers one quest
 
 Independent measurement found iOS 27 cold launch roughly 21% faster and warm launch about 23% faster on the same binary, with the gain concentrated almost entirely in pre-main work (Apple's own WWDC26 claim goes up to 30%). That's real, and it's good news. But a blended, unsegmented launch-time percentile can't tell the difference between "the OS got faster" and "my own post-main code got slower, and the OS win is currently paying for it." `LaunchCohort` segments launch samples by OS-version cohort, computes bounds-checked percentiles per cohort, and flags when a cohort's own trend diverges from the blended trend by more than a threshold — the exact shape of "masked regression" a platform migration produces.
 
-This repo is the demo companion to the Medium article *(added after publish)*.
+This repo is the demo companion to the Medium article [*You Got a 20% Launch-Time Win. Your Dashboard Can't Tell You What It's Hiding.*](https://medium.com/@er.rajatlakhina/you-got-a-20-launch-time-win-your-dashboard-cant-tell-you-what-it-s-hiding-3652ba4ac3b3).
 
 ## What it shows
 
